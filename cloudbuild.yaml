@@ -37,6 +37,9 @@ steps:
 images:
   - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest'
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 substitutions:
   _PROJECT_ID: 'dbt-pipeline-415806'
   _REPO_NAME: 'yellow-dbt'
