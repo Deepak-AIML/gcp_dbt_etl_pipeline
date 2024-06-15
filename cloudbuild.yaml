@@ -41,9 +41,9 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _PROJECT_ID: 'dbt-pipeline-415806'
-  _REPO_NAME: 'yellow-dbt'
-  _IMAGE_NAME: 'dev'
-  _SECRET_NAME: 'dbt_permission'
-  _REGION: 'us-central1'
-  _JOB_NAME: 'yellow-dbt-etl'
+  PROJECT_ID: 'dbt-pipeline-415806'
+  REPO_NAME: 'yellow-dbt'
+  IMAGE_NAME: 'dev'
+  SECRET_NAME: 'dbt_permission'
+  REGION: 'us-central1'
+  JOB_NAME: 'yellow-dbt-etl'
