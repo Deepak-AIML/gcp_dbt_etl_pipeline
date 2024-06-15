@@ -1,0 +1,46 @@
+steps:
+  # Step 1: Retrieve the secret from Secret Manager
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Retrieving secret..."
+        gcloud secrets versions access latest --secret=$SECRET_NAME > dbt_permission.json
+
+  # Step 2: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest'
+      - '--build-arg'
+      - 'DBT_PERMISSION=$(cat dbt_permission.json)'
+      - '.'
+
+  # Step 3: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest'
+
+  # Step 4: Deploy the Docker image to Cloud Run Jobs
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Deploying to Cloud Run Jobs..."
+        gcloud run jobs create $JOB_NAME --image=us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest --region=$REGION --max-retries=3 --max-run-duration=10m
+        gcloud run jobs execute $JOB_NAME --region=$REGION
+
+images:
+  - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+
+substitutions:
+  _PROJECT_ID: 'dbt-pipeline-415806'
+  _REPO_NAME: 'yellow-dbt'
+  _IMAGE_NAME: 'dev'
+  _SECRET_NAME: 'dbt_permission'
+  _REGION: 'us-central1'
+  _JOB_NAME: 'yellow-dbt-etl'

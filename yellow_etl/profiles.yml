@@ -4,7 +4,8 @@ yellow_etl:
       dataset: yellow_taxi
       job_execution_timeout_seconds: 300
       job_retries: 1
-      keyfile: /home/deepak/Documents/shreya project/gcp_dbt_etl_pipeline/service_key.json
+      # keyfile: /home/deepak/Documents/shreya project/gcp_dbt_etl_pipeline/service_key.json
+      keyfile: /etl/dbt_permission.json
       location: US
       method: service-account
       priority: interactive
