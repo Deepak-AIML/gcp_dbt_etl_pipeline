@@ -16,14 +16,12 @@ steps:
 
   # Step 2: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
     args:
-      - 'build'
-      - '-t'
-      - 'us-docker.pkg.dev/$_PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:latest'
-      - '--build-arg'
-      - 'DBT_PERMISSION=$(cat dbt_permission.json)'
-      - '.'
-    waitFor: ['-']
+      - '-c'
+      - |
+        DBT_PERMISSION=$(cat dbt_permission.json)
+        docker build --build-arg DBT_PERMISSION="$DBT_PERMISSION" -t us-docker.pkg.dev/$_PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:latest .
 
   # Step 3: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -38,7 +36,7 @@ steps:
       - '-c'
       - |
         echo "Deploying to Cloud Run Jobs..."
-        gcloud run jobs create $_JOB_NAME --image=us-docker.pkg.dev/$_PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:latest --region=$_REGION --max-retries=3 --max-run-duration=10m
+        gcloud run jobs create $_JOB_NAME --image=us-docker.pkg.dev/$_PROJECT_ID/$_REPO_NAME/$_IMAGE_NAME:latest --region=$_REGION --max-retries=1
         gcloud run jobs execute $_JOB_NAME --region=$_REGION
 
 images:
