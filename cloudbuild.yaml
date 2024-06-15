@@ -35,7 +35,7 @@ steps:
         gcloud run jobs execute $JOB_NAME --region=$REGION
 
 images:
-  - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+  - 'us-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest'
 
 substitutions:
   _PROJECT_ID: 'dbt-pipeline-415806'
