@@ -7,6 +7,12 @@ steps:
       - |
         echo "Retrieving secret..."
         gcloud secrets versions access latest --secret=$_SECRET_NAME > dbt_permission.json
+        if [ $? -ne 0 ]; then
+          echo "Failed to retrieve secret"
+          exit 1
+        fi
+        echo "Secret retrieved successfully"
+        cat dbt_permission.json
 
   # Step 2: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
@@ -17,6 +23,7 @@ steps:
       - '--build-arg'
       - 'DBT_PERMISSION=$(cat dbt_permission.json)'
       - '.'
+    waitFor: ['-']
 
   # Step 3: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'

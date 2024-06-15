@@ -28,6 +28,9 @@ ARG DBT_PERMISSION
 # Write the secret to a file inside the container
 RUN echo "$DBT_PERMISSION" > /etl/dbt_permission.json
 
+# Print the contents of the secret file for debugging
+RUN echo "Contents of dbt_permission.json:" && cat /etl/dbt_permission.json
+
 # Make the entry point script executable
 RUN chmod +x /etl/run_dbt.sh
 
