@@ -22,11 +22,8 @@ COPY yellow_etl/ /etl/
 # Copy the entry point script into the container at /etl
 COPY src/run_dbt.sh /etl/
 
-# Accept the secret as a build argument
-ARG DBT_PERMISSION
-
-# Write the secret to a file inside the container
-RUN echo "$DBT_PERMISSION" > /etl/dbt_permission.json
+# Copy the secret file into the container
+COPY dbt_permission.json /etl/dbt_permission.json
 
 # Print the contents of the secret file for debugging
 RUN echo "Contents of dbt_permission.json:" && cat /etl/dbt_permission.json
